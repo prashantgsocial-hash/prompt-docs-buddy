@@ -18,8 +18,8 @@ export const Route = createFileRoute("/cart")({
   component: CartPage,
 });
 
-export const FREE_SHIP = 25000;
-export const shippingFor = (subtotal: number) => (subtotal === 0 || subtotal >= FREE_SHIP ? 0 : 1500);
+const FREE_SHIP = 25000;
+const shippingFor = (subtotal: number) => (subtotal === 0 || subtotal >= FREE_SHIP ? 0 : 1500);
 
 function CartPage() {
   const { lines, setQty, remove, subtotal } = useCart();
