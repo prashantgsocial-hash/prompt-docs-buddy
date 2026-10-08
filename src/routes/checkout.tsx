@@ -24,15 +24,23 @@ const field = "w-full rounded-sm border bg-card px-4 py-3 text-sm focus:border-f
 function Checkout() {
   const { lines, subtotal, clear } = useCart();
   const [pay, setPay] = useState("upi");
+  const [plan, setPlan] = useState<"full" | "advance">("full");
   const [done, setDone] = useState<string | null>(null);
   const shipping = subtotal === 0 || subtotal >= 25000 ? 0 : 1500;
+  const total = subtotal + shipping;
+  const advance = Math.round(total * 0.1);
+  const dueNow = plan === "advance" ? advance : total;
 
   if (done)
     return (
       <div className="mx-auto max-w-xl px-6 py-32 text-center">
         <p className="eyebrow mb-4">Order {done}</p>
         <h1 className="text-5xl">Thank you!</h1>
-        <p className="mt-4 text-muted-foreground">Your order is confirmed. We'll WhatsApp you dispatch updates within 2 working days.</p>
+        <p className="mt-4 text-muted-foreground">
+          {plan === "advance"
+            ? `Your ${formatINR(advance)} advance is received. We'll WhatsApp you dispatch updates within 2 working days — the balance of ${formatINR(total - advance)} is payable before dispatch.`
+            : "Your order is confirmed. We'll WhatsApp you dispatch updates within 2 working days."}
+        </p>
         <Link to="/shop" className="btn-base btn-primary mt-10">Continue Shopping</Link>
       </div>
     );
