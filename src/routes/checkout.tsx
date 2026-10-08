@@ -80,7 +80,26 @@ function Checkout() {
             </div>
           </fieldset>
           <fieldset>
-            <legend className="mb-4 text-2xl">Payment</legend>
+            <legend className="mb-4 text-2xl">Payment plan</legend>
+            <div className="divide-y rounded-sm border">
+              <label className="flex cursor-pointer items-start gap-3 px-4 py-4 text-sm">
+                <input type="radio" name="plan" checked={plan === "full"} onChange={() => setPlan("full")} className="mt-0.5 accent-current" />
+                <span>
+                  Pay in full — {formatINR(total)}
+                  <span className="block text-xs text-muted-foreground">Your order goes straight into production.</span>
+                </span>
+              </label>
+              <label className="flex cursor-pointer items-start gap-3 px-4 py-4 text-sm">
+                <input type="radio" name="plan" checked={plan === "advance"} onChange={() => setPlan("advance")} className="mt-0.5 accent-current" />
+                <span>
+                  Book with 10% advance — {formatINR(advance)} now
+                  <span className="block text-xs text-muted-foreground">Reserve your piece today; pay the balance of {formatINR(total - advance)} before dispatch.</span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend className="mb-4 text-2xl">Payment method</legend>
             <div className="divide-y rounded-sm border">
               {[
                 { id: "upi", label: "UPI (GPay, PhonePe, Paytm)" },
