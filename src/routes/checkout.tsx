@@ -114,7 +114,9 @@ function Checkout() {
               ))}
             </div>
           </fieldset>
-          <button className="btn-base btn-primary w-full">Place Order · {formatINR(subtotal + shipping)}</button>
+          <button className="btn-base btn-primary w-full">
+            {plan === "advance" ? `Book Now · Pay ${formatINR(advance)}` : `Place Order · ${formatINR(total)}`}
+          </button>
         </div>
         <aside className="h-fit bg-secondary p-8 lg:col-span-2">
           <h2 className="text-2xl">Order summary</h2>
