@@ -1,9 +1,10 @@
 // Cane Brand Bar + Premium Header + Social Rail + Mobile Action Bar.
 import { useEffect, useState } from "react";
+import { Link, type LinkProps } from "@tanstack/react-router";
 import { useCart } from "./cart";
 import { IconBag, IconClose, IconHeart, IconInstagram, IconMenu, IconPhone, IconPin, IconSearch, IconUser, IconWhatsApp, IconX } from "./icons";
 
-export interface NavItem { label: string; href: string }
+export interface NavItem { label: string; href: NonNullable<LinkProps["to"]> }
 
 export function CaneBrandBar({ launchYear = 2012, text = "Crafted in India", phone = "+91 98000 00000" }) {
   return (
@@ -32,10 +33,10 @@ export function CaneHeader({ logo = "Cane", nav, transparent = true }: { logo?: 
     <header className={`sticky top-0 z-40 transition-colors duration-500 ${solid ? "bg-background/95 text-foreground shadow-sm backdrop-blur" : "bg-transparent text-cane-white"}`}>
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         <button className="md:hidden" aria-label="Menu" onClick={() => setMenu(!menu)}>{menu ? <IconClose /> : <IconMenu />}</button>
-        <a href="/" className="font-display text-3xl tracking-tight">{logo}<span className="text-clay">.</span></a>
+        <Link to="/" className="font-display text-3xl tracking-tight">{logo}<span className="text-clay">.</span></Link>
         <nav className="hidden gap-8 md:flex">
           {nav.map((n) => (
-            <a key={n.label} href={n.href} className="text-xs font-semibold uppercase tracking-[0.18em] opacity-90 hover:opacity-100">{n.label}</a>
+            <Link key={n.label} to={n.href} activeOptions={{ exact: n.href === "/" }} activeProps={{ className: "text-clay" }} className="text-xs font-semibold uppercase tracking-[0.18em] opacity-90 hover:opacity-100">{n.label}</Link>
           ))}
         </nav>
         <div className="flex items-center gap-4">
@@ -50,7 +51,7 @@ export function CaneHeader({ logo = "Cane", nav, transparent = true }: { logo?: 
       </div>
       {menu && (
         <nav className="flex flex-col gap-4 border-t bg-background px-6 py-6 md:hidden">
-          {nav.map((n) => <a key={n.label} href={n.href} className="font-display text-2xl">{n.label}</a>)}
+          {nav.map((n) => <Link key={n.label} to={n.href} onClick={() => setMenu(false)} className="font-display text-2xl">{n.label}</Link>)}
         </nav>
       )}
     </header>
