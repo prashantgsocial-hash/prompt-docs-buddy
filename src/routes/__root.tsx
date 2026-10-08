@@ -17,7 +17,9 @@ import { CaneFooter } from "@/components/cane/widgets";
 const nav: NavItem[] = [
   { label: "Shop", href: "/shop" },
   { label: "Categories", href: "/categories" },
+  { label: "Craft", href: "/craft" },
   { label: "Blog", href: "/blog" },
+  { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -138,7 +140,7 @@ function RootComponent() {
         <CaneFooter columns={[
           { title: "Shop", links: [{ label: "All Products", href: "/shop" }, { label: "Categories", href: "/categories" }] },
           { title: "Read", links: [{ label: "Blog", href: "/blog" }] },
-          { title: "Company", links: [{ label: "Home", href: "/" }, { label: "Contact Us", href: "/contact" }] },
+          { title: "Company", links: [{ label: "Our Craft", href: "/craft" }, { label: "Blog", href: "/blog" }, { label: "Contact Us", href: "/contact" }] },
         ]} />
         <CaneMiniCart />
         <CaneMobileActionBar />
