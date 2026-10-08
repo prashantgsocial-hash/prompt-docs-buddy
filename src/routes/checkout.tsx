@@ -133,7 +133,13 @@ function Checkout() {
             <div className="flex justify-between"><span>Subtotal</span><span>{formatINR(subtotal)}</span></div>
             <div className="flex justify-between"><span>Shipping</span><span>{shipping ? formatINR(shipping) : "Free"}</span></div>
           </div>
-          <div className="mt-4 flex justify-between border-t pt-4 font-display text-2xl"><span>Total</span><span>{formatINR(subtotal + shipping)}</span></div>
+          <div className="mt-4 flex justify-between border-t pt-4 font-display text-2xl"><span>Total</span><span>{formatINR(total)}</span></div>
+          {plan === "advance" && (
+            <div className="mt-4 space-y-2 rounded-sm bg-background p-4 text-sm">
+              <div className="flex justify-between font-medium"><span>Due now (10%)</span><span>{formatINR(advance)}</span></div>
+              <div className="flex justify-between text-muted-foreground"><span>Balance before dispatch</span><span>{formatINR(total - advance)}</span></div>
+            </div>
+          )}
         </aside>
       </form>
     </>
