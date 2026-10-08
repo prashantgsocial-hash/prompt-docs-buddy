@@ -1,6 +1,7 @@
 // Cane Mini Cart — slide-in drawer. Mirrors WooCommerce AJAX cart fragments.
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { formatINR, type Product } from "@/lib/products";
+import { Link } from "@tanstack/react-router";
 import { IconClose, IconWhatsApp } from "./icons";
 
 interface Line { product: Product; qty: number }
@@ -12,6 +13,8 @@ interface CartCtx {
   remove: (id: string) => void;
   setQty: (id: string, q: number) => void;
   count: number;
+  subtotal: number;
+  clear: () => void;
 }
 const Ctx = createContext<CartCtx | null>(null);
 export const useCart = () => {
@@ -34,12 +37,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const setQty = (id: string, q: number) =>
     setLines((ls) => ls.map((l) => (l.product.id === id ? { ...l, qty: Math.max(1, q) } : l)));
   const count = lines.reduce((a, l) => a + l.qty, 0);
-  return <Ctx.Provider value={{ lines, open, setOpen, add, remove, setQty, count }}>{children}</Ctx.Provider>;
+  const subtotal = lines.reduce((a, l) => a + (l.product.salePrice ?? l.product.price) * l.qty, 0);
+  const clear = () => setLines([]);
+  return <Ctx.Provider value={{ lines, open, setOpen, add, remove, setQty, count, subtotal, clear }}>{children}</Ctx.Provider>;
 }
 
 export function CaneMiniCart({ freeShippingThreshold = 25000, whatsapp = "919800000000" }) {
-  const { lines, open, setOpen, remove, setQty } = useCart();
-  const subtotal = lines.reduce((a, l) => a + (l.product.salePrice ?? l.product.price) * l.qty, 0);
+  const { lines, open, setOpen, remove, setQty, subtotal } = useCart();
   const pct = Math.min(100, (subtotal / freeShippingThreshold) * 100);
   const left = freeShippingThreshold - subtotal;
 
@@ -95,8 +99,8 @@ export function CaneMiniCart({ freeShippingThreshold = 25000, whatsapp = "919800
           </div>
           <div className="flex justify-between font-display text-xl"><span>Subtotal</span><span>{formatINR(subtotal)}</span></div>
           <div className="grid grid-cols-2 gap-2">
-            <button className="btn-base btn-outline">View Cart</button>
-            <button className="btn-base btn-primary">Checkout</button>
+            <Link to="/cart" onClick={() => setOpen(false)} className="btn-base btn-outline">View Cart</Link>
+            <Link to="/checkout" onClick={() => setOpen(false)} className="btn-base btn-primary">Checkout</Link>
           </div>
           <a href={`https://wa.me/${whatsapp}`} className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <IconWhatsApp className="h-4 w-4" /> Questions? Chat on WhatsApp
