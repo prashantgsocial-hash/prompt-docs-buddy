@@ -24,15 +24,23 @@ const field = "w-full rounded-sm border bg-card px-4 py-3 text-sm focus:border-f
 function Checkout() {
   const { lines, subtotal, clear } = useCart();
   const [pay, setPay] = useState("upi");
+  const [plan, setPlan] = useState<"full" | "advance">("full");
   const [done, setDone] = useState<string | null>(null);
   const shipping = subtotal === 0 || subtotal >= 25000 ? 0 : 1500;
+  const total = subtotal + shipping;
+  const advance = Math.round(total * 0.1);
+  const dueNow = plan === "advance" ? advance : total;
 
   if (done)
     return (
       <div className="mx-auto max-w-xl px-6 py-32 text-center">
         <p className="eyebrow mb-4">Order {done}</p>
         <h1 className="text-5xl">Thank you!</h1>
-        <p className="mt-4 text-muted-foreground">Your order is confirmed. We'll WhatsApp you dispatch updates within 2 working days.</p>
+        <p className="mt-4 text-muted-foreground">
+          {plan === "advance"
+            ? `Your ${formatINR(advance)} advance is received. We'll WhatsApp you dispatch updates within 2 working days — the balance of ${formatINR(total - advance)} is payable before dispatch.`
+            : "Your order is confirmed. We'll WhatsApp you dispatch updates within 2 working days."}
+        </p>
         <Link to="/shop" className="btn-base btn-primary mt-10">Continue Shopping</Link>
       </div>
     );
@@ -72,7 +80,26 @@ function Checkout() {
             </div>
           </fieldset>
           <fieldset>
-            <legend className="mb-4 text-2xl">Payment</legend>
+            <legend className="mb-4 text-2xl">Payment plan</legend>
+            <div className="divide-y rounded-sm border">
+              <label className="flex cursor-pointer items-start gap-3 px-4 py-4 text-sm">
+                <input type="radio" name="plan" checked={plan === "full"} onChange={() => setPlan("full")} className="mt-0.5 accent-current" />
+                <span>
+                  Pay in full — {formatINR(total)}
+                  <span className="block text-xs text-muted-foreground">Your order goes straight into production.</span>
+                </span>
+              </label>
+              <label className="flex cursor-pointer items-start gap-3 px-4 py-4 text-sm">
+                <input type="radio" name="plan" checked={plan === "advance"} onChange={() => setPlan("advance")} className="mt-0.5 accent-current" />
+                <span>
+                  Book with 10% advance — {formatINR(advance)} now
+                  <span className="block text-xs text-muted-foreground">Reserve your piece today; pay the balance of {formatINR(total - advance)} before dispatch.</span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend className="mb-4 text-2xl">Payment method</legend>
             <div className="divide-y rounded-sm border">
               {[
                 { id: "upi", label: "UPI (GPay, PhonePe, Paytm)" },
@@ -87,7 +114,9 @@ function Checkout() {
               ))}
             </div>
           </fieldset>
-          <button className="btn-base btn-primary w-full">Place Order · {formatINR(subtotal + shipping)}</button>
+          <button className="btn-base btn-primary w-full">
+            {plan === "advance" ? `Book Now · Pay ${formatINR(advance)}` : `Place Order · ${formatINR(total)}`}
+          </button>
         </div>
         <aside className="h-fit bg-secondary p-8 lg:col-span-2">
           <h2 className="text-2xl">Order summary</h2>
@@ -104,7 +133,13 @@ function Checkout() {
             <div className="flex justify-between"><span>Subtotal</span><span>{formatINR(subtotal)}</span></div>
             <div className="flex justify-between"><span>Shipping</span><span>{shipping ? formatINR(shipping) : "Free"}</span></div>
           </div>
-          <div className="mt-4 flex justify-between border-t pt-4 font-display text-2xl"><span>Total</span><span>{formatINR(subtotal + shipping)}</span></div>
+          <div className="mt-4 flex justify-between border-t pt-4 font-display text-2xl"><span>Total</span><span>{formatINR(total)}</span></div>
+          {plan === "advance" && (
+            <div className="mt-4 space-y-2 rounded-sm bg-background p-4 text-sm">
+              <div className="flex justify-between font-medium"><span>Due now (10%)</span><span>{formatINR(advance)}</span></div>
+              <div className="flex justify-between text-muted-foreground"><span>Balance before dispatch</span><span>{formatINR(total - advance)}</span></div>
+            </div>
+          )}
         </aside>
       </form>
     </>
