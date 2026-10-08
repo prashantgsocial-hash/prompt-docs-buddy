@@ -9,6 +9,17 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { useRouterState } from "@tanstack/react-router";
+import { CartProvider, CaneMiniCart } from "@/components/cane/cart";
+import { CaneBrandBar, CaneHeader, CaneMobileActionBar, CaneSocialRail, type NavItem } from "@/components/cane/header";
+import { CaneFooter } from "@/components/cane/widgets";
+
+const nav: NavItem[] = [
+  { label: "Shop", href: "/shop" },
+  { label: "Categories", href: "/categories" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+];
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -114,11 +125,24 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const isHome = useRouterState({ select: (st) => st.location.pathname === "/" });
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <CartProvider>
+        <CaneBrandBar />
+        <CaneHeader nav={nav} transparent={isHome} />
+        <CaneSocialRail />
+        <main><Outlet /></main>
+        <CaneFooter columns={[
+          { title: "Shop", links: [{ label: "All Products", href: "/shop" }, { label: "Categories", href: "/categories" }] },
+          { title: "Read", links: [{ label: "Blog", href: "/blog" }] },
+          { title: "Company", links: [{ label: "Home", href: "/" }, { label: "Contact Us", href: "/contact" }] },
+        ]} />
+        <CaneMiniCart />
+        <CaneMobileActionBar />
+      </CartProvider>
     </QueryClientProvider>
   );
 }

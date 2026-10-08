@@ -1,11 +1,12 @@
 // Cane widget library. Each export maps 1:1 to a planned Elementor widget
 // in the "cane-elementor-widgets" plugin; props = Elementor controls.
 import { useState, type ReactNode } from "react";
-import { formatINR, type Product, type Space, type Testimonial } from "@/lib/products";
+import { Link, type LinkProps } from "@tanstack/react-router";
+import { formatINR, type Category, type Product, type Testimonial } from "@/lib/products";
 import { useCart } from "./cart";
 import { IconArrow, IconHeart, IconStar, IconWhatsApp } from "./icons";
 
-type Btn = { label: string; href: string };
+type Btn = { label: string; href: NonNullable<LinkProps["to"]> };
 
 /* 1. Cane Hero */
 export function CaneHero(p: {
@@ -24,8 +25,8 @@ export function CaneHero(p: {
           </h1>
           {p.description && <p className="mt-6 max-w-lg text-base text-ivory/85 md:text-lg">{p.description}</p>}
           <div className={`mt-10 flex flex-wrap gap-3 ${align === "center" ? "justify-center" : ""}`}>
-            {p.primary && <a href={p.primary.href} className="btn-base btn-light">{p.primary.label}</a>}
-            {p.secondary && <a href={p.secondary.href} className="btn-base border border-cane-white text-cane-white hover:bg-cane-white hover:text-espresso">{p.secondary.label}</a>}
+            {p.primary && <Link to={p.primary.href} className="btn-base btn-light">{p.primary.label}</Link>}
+            {p.secondary && <Link to={p.secondary.href} className="btn-base border border-cane-white text-cane-white hover:bg-cane-white hover:text-espresso">{p.secondary.label}</Link>}
           </div>
         </div>
       </div>
@@ -41,7 +42,7 @@ function SectionHead({ eyebrow, heading, action }: { eyebrow?: string | undefine
         {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
         <h2 className="max-w-xl text-4xl leading-tight md:text-5xl">{heading}</h2>
       </div>
-      {action && <a href={action.href} className="inline-flex items-center gap-2 border-b border-foreground pb-1 text-xs font-semibold uppercase tracking-[0.18em]">{action.label} <IconArrow /></a>}
+      {action && <Link to={action.href} className="inline-flex items-center gap-2 border-b border-foreground pb-1 text-xs font-semibold uppercase tracking-[0.18em]">{action.label} <IconArrow /></Link>}
     </div>
   );
 }
@@ -57,7 +58,7 @@ export function CaneEditorialStatement({ eyebrow, heading, description, image, i
           {eyebrow && <p className="eyebrow mb-4">{eyebrow}</p>}
           <h2 className="text-4xl leading-tight md:text-5xl">{heading}</h2>
           <p className="mt-6 text-muted-foreground">{description}</p>
-          {button && <a href={button.href} className="btn-base btn-primary mt-8">{button.label}</a>}
+          {button && <Link to={button.href} className="btn-base btn-primary mt-8">{button.label}</Link>}
         </div>
         <div className={`md:col-span-6 ${imagePosition === "right" ? "lg:col-start-7" : ""}`}>
           <img src={image} alt="" loading="lazy" width={1024} height={1280} className="aspect-[4/5] w-full rounded-sm object-cover" />
@@ -74,9 +75,11 @@ export function CaneProductCard({ product: p, showRating = true, showCategory = 
   return (
     <article className="group">
       <div className="relative overflow-hidden rounded-sm bg-card">
+        <Link to="/product/$id" params={{ id: p.id }} className="block">
         <img src={p.image} alt={p.name} loading="lazy" width={1024} height={1280}
           className={`aspect-[4/5] w-full object-cover transition duration-700 ${p.hoverImage ? "group-hover:opacity-0" : "group-hover:scale-105"}`} />
         {p.hoverImage && <img src={p.hoverImage} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-700 group-hover:opacity-100" />}
+        </Link>
         {p.badge && <span className={`absolute left-3 top-3 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wider ${p.badge === "Sale" ? "bg-clay text-cane-white" : "bg-background text-foreground"}`}>{p.badge}</span>}
         <button aria-label="Wishlist" onClick={() => setLiked(!liked)}
           className={`absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-background/90 ${liked ? "text-clay" : ""}`}>
@@ -89,7 +92,7 @@ export function CaneProductCard({ product: p, showRating = true, showCategory = 
       </div>
       <div className="mt-4 space-y-1">
         {showCategory && <p className="eyebrow text-muted-foreground">{p.category}</p>}
-        <h3 className="text-xl">{p.name}</h3>
+        <h3 className="text-xl"><Link to="/product/$id" params={{ id: p.id }} className="hover:text-clay">{p.name}</Link></h3>
         <div className="flex items-center justify-between">
           <p className="text-sm">
             {p.salePrice ? <><span className="text-clay">{formatINR(p.salePrice)}</span> <s className="ml-1 text-muted-foreground">{formatINR(p.price)}</s></> : formatINR(p.price)}
@@ -147,7 +150,7 @@ export function CaneSignatureProduct({ product: p, eyebrow = "Signature Piece", 
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <button onClick={() => add(p)} className="btn-base btn-primary">Add to Cart</button>
-            <a href="#" className="btn-base btn-outline">View Details</a>
+            <Link to="/product/$id" params={{ id: p.id }} className="btn-base btn-outline">View Details</Link>
           </div>
         </div>
       </div>
@@ -155,14 +158,14 @@ export function CaneSignatureProduct({ product: p, eyebrow = "Signature Piece", 
   );
 }
 
-/* 6. Cane Shop By Space */
-export function CaneShopBySpace({ eyebrow, heading, spaces }: { eyebrow?: string; heading: string; spaces: Space[] }) {
+/* 6. Cane Shop By Category */
+export function CaneShopByCategory({ eyebrow, heading, categories: spaces }: { eyebrow?: string; heading: string; categories: Category[] }) {
   return (
     <section className="mx-auto max-w-7xl px-6 py-24">
       <SectionHead eyebrow={eyebrow} heading={heading} />
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
         {spaces.map((s, i) => (
-          <a key={s.title} href={s.href} className={`group relative overflow-hidden rounded-sm ${i === 0 ? "md:row-span-2" : ""}`}>
+          <Link key={s.slug} to="/categories/$slug" params={{ slug: s.slug }} className={`group relative overflow-hidden rounded-sm ${i === 0 ? "md:row-span-2" : ""}`}>
             <img src={s.image} alt={s.title} loading="lazy" width={1024} height={1280}
               className={`w-full object-cover transition duration-700 group-hover:scale-105 ${i === 0 ? "aspect-[4/5] md:h-full" : "aspect-[4/5] md:aspect-[4/3]"}`} />
             <div className="absolute inset-0 bg-gradient-to-t from-espresso/70 via-transparent" />
@@ -170,7 +173,7 @@ export function CaneShopBySpace({ eyebrow, heading, spaces }: { eyebrow?: string
               <h3 className="text-2xl md:text-3xl">{s.title}</h3>
               <p className="mt-1 hidden text-sm text-ivory/80 md:block">{s.description}</p>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </section>
@@ -234,7 +237,7 @@ export function CaneEditorialStory({ image, eyebrow, heading, description, butto
           <p className="eyebrow mb-4">{eyebrow}</p>
           <h2 className="text-4xl leading-tight">{heading}</h2>
           <p className="mt-5 text-muted-foreground">{description}</p>
-          {button && <a href={button.href} className="mt-8 inline-flex items-center gap-2 border-b border-foreground pb-1 text-xs font-semibold uppercase tracking-[0.18em]">{button.label} <IconArrow /></a>}
+          {button && <Link to={button.href} className="mt-8 inline-flex items-center gap-2 border-b border-foreground pb-1 text-xs font-semibold uppercase tracking-[0.18em]">{button.label} <IconArrow /></Link>}
         </div>
       </div>
     </section>
@@ -282,6 +285,30 @@ export function CaneInstagramGallery({ handle, images }: { handle: string; image
 }
 
 /* 12. Cane Contact CTA */
+/* Page banner for inner pages */
+export function CanePageHeader({ eyebrow, heading, description, image }: { eyebrow?: string; heading: string; description?: string; image?: string }) {
+  if (image) return (
+    <section className="relative flex min-h-[46vh] items-end overflow-hidden">
+      <img src={image} alt="" width={1920} height={1088} className="absolute inset-0 h-full w-full object-cover" />
+      <div className="absolute inset-0 bg-espresso/50" />
+      <div className="relative mx-auto w-full max-w-7xl px-6 pb-14 pt-24 text-cane-white">
+        {eyebrow && <p className="eyebrow mb-3 text-sand">{eyebrow}</p>}
+        <h1 className="text-5xl md:text-7xl">{heading}</h1>
+        {description && <p className="mt-4 max-w-xl text-ivory/85">{description}</p>}
+      </div>
+    </section>
+  );
+  return (
+    <section className="border-b bg-secondary">
+      <div className="mx-auto max-w-7xl px-6 py-16 md:py-24">
+        {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
+        <h1 className="text-5xl md:text-7xl">{heading}</h1>
+        {description && <p className="mt-4 max-w-xl text-muted-foreground">{description}</p>}
+      </div>
+    </section>
+  );
+}
+
 export function CaneContactCTA({ image, heading, description, button, whatsapp }: { image: string; heading: string; description: string; button: Btn; whatsapp: string }) {
   return (
     <section className="relative flex min-h-[60vh] items-center overflow-hidden">
@@ -291,7 +318,7 @@ export function CaneContactCTA({ image, heading, description, button, whatsapp }
         <h2 className="text-4xl leading-tight md:text-6xl">{heading}</h2>
         <p className="mt-6 text-ivory/85">{description}</p>
         <div className="mt-10 flex flex-wrap justify-center gap-3">
-          <a href={button.href} className="btn-base btn-light">{button.label}</a>
+          <Link to={button.href} className="btn-base btn-light">{button.label}</Link>
           <a href={`https://wa.me/${whatsapp}`} className="btn-base border border-cane-white text-cane-white hover:bg-cane-white hover:text-espresso"><IconWhatsApp className="h-4 w-4" /> WhatsApp Us</a>
         </div>
       </div>
@@ -300,7 +327,7 @@ export function CaneContactCTA({ image, heading, description, button, whatsapp }
 }
 
 /* Footer */
-export function CaneFooter({ columns }: { columns: { title: string; links: string[] }[] }) {
+export function CaneFooter({ columns }: { columns: { title: string; links: Btn[] }[] }) {
   return (
     <footer className="bg-espresso pb-24 text-ivory md:pb-0">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 md:grid-cols-5">
@@ -315,7 +342,7 @@ export function CaneFooter({ columns }: { columns: { title: string; links: strin
         {columns.map((c) => (
           <div key={c.title}>
             <p className="eyebrow mb-5 text-sand">{c.title}</p>
-            <ul className="space-y-3 text-sm text-ivory/75">{c.links.map((l) => <li key={l}><a href="#" className="hover:text-ivory">{l}</a></li>)}</ul>
+            <ul className="space-y-3 text-sm text-ivory/75">{c.links.map((l) => <li key={l.label}><Link to={l.href} className="hover:text-ivory">{l.label}</Link></li>)}</ul>
           </div>
         ))}
       </div>

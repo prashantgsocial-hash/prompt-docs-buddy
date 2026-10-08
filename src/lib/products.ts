@@ -27,6 +27,9 @@ export interface Product {
   image: string;
   hoverImage?: string;
   badge?: "Sale" | "New" | "Best Seller";
+  description?: string;
+  materials?: string;
+  dimensions?: string;
 }
 
 export const products: Product[] = [
@@ -41,6 +44,7 @@ export const products: Product[] = [
     image: chairLounge,
     hoverImage: armchair,
     badge: "Best Seller",
+    description: "A low, deep lounge chair with a hand-caned back and seat on a solid teak frame — made to be sunk into with a book and a cup of chai.",
   },
   {
     id: "kovalam-dining",
@@ -95,21 +99,71 @@ export const products: Product[] = [
   },
 ];
 
-export interface Space {
+export interface Category {
+  slug: string;
   title: string;
   description: string;
   image: string;
-  href: string;
 }
 
-export const spaces: Space[] = [
-  { title: "Living Room", description: "Loungers, armchairs & coffee tables", image: roomLiving, href: "#" },
-  { title: "Balcony", description: "Compact chairs & planters", image: roomBalcony, href: "#" },
-  { title: "Dining", description: "Dining chairs & benches", image: roomDining, href: "#" },
-  { title: "Bedroom", description: "Headboards & bedside pieces", image: roomBedroom, href: "#" },
-  { title: "Outdoor", description: "Weather-treated garden sets", image: roomOutdoor, href: "#" },
-  { title: "Reading Corner", description: "High-back chairs & lamps", image: roomReading, href: "#" },
+// Mirrors WooCommerce product categories (product.category === title).
+export const categories: Category[] = [
+  { slug: "seating", title: "Seating", description: "Loungers, armchairs & benches", image: roomLiving },
+  { slug: "dining", title: "Dining", description: "Dining chairs & tables", image: roomDining },
+  { slug: "bedroom", title: "Bedroom", description: "Headboards & bedside pieces", image: roomBedroom },
+  { slug: "lighting", title: "Lighting", description: "Woven pendants & lamps", image: roomReading },
+  { slug: "outdoor", title: "Outdoor", description: "Weather-treated garden sets", image: roomOutdoor },
+  { slug: "balcony", title: "Balcony", description: "Compact chairs & planters", image: roomBalcony },
 ];
+
+export const productsInCategory = (c: Category) => products.filter((p) => p.category === c.title);
+export const getProduct = (id: string) => products.find((p) => p.id === id);
+export const getCategory = (slug: string) => categories.find((c) => c.slug === slug);
+
+export interface Post {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  readTime: string;
+  category: string;
+  image: string;
+  body: string[];
+}
+
+export const posts: Post[] = [
+  {
+    slug: "inside-our-kerala-workshop", title: "Inside our Kerala workshop", category: "Craft",
+    excerpt: "Meet the families who have been weaving cane for three generations, and see how a Malabar chair comes to life.",
+    date: "12 Sep 2026", readTime: "6 min read", image: roomReading,
+    body: [
+      "Our workshop sits a short drive from the backwaters of Alleppey. Every morning, weavers settle in with bundles of soaked cane, softened just enough to bend without breaking.",
+      "A single Malabar Lounge Chair takes around forty hours of hand-weaving. The pattern is counted strand by strand — there is no template other than memory and practice.",
+      "Many of our artisans learned from their parents, and are now teaching their own children. Buying a Cane piece keeps that knowledge alive.",
+    ],
+  },
+  {
+    slug: "caring-for-cane-furniture", title: "How to care for cane furniture", category: "Care Guide",
+    excerpt: "Simple habits that keep your cane looking beautiful through Indian summers and monsoons.",
+    date: "28 Aug 2026", readTime: "4 min read", image: roomLiving,
+    body: [
+      "Dust weekly with a soft brush, getting into the gaps of the weave. Once a month, wipe with a cloth dampened in mild soapy water and let it dry in the shade.",
+      "Avoid harsh direct sunlight for long hours — it can dry cane out. During the monsoon, keep pieces off damp floors and let air circulate.",
+      "If a strand loosens, don't pull it. Send us a photo on WhatsApp and we'll guide you or arrange a repair.",
+    ],
+  },
+  {
+    slug: "styling-a-small-balcony", title: "Styling a small balcony with cane", category: "Inspiration",
+    excerpt: "Light, breathable pieces that make even a compact city balcony feel like a retreat.",
+    date: "05 Aug 2026", readTime: "5 min read", image: roomBalcony,
+    body: [
+      "Start with one anchor piece — a low lounge chair or a two-seater bench. Cane's open weave keeps it visually light, so the space doesn't feel crowded.",
+      "Add a pendant light and a few planters at different heights. Layer a cotton cushion in an earthy tone and you're done.",
+      "Because cane is lightweight, you can move pieces indoors when the rains arrive.",
+    ],
+  },
+];
+export const getPost = (slug: string) => posts.find((p) => p.slug === slug);
 
 export interface Testimonial {
   name: string;
