@@ -59,14 +59,14 @@ function Index() {
           eyebrow="Since 2012"
           heading="Furniture that lets your home breathe."
           description="Every piece begins as a single strand of cane, woven over days by a master artisan. The result is furniture with warmth you can feel — and a weave you'll never tire of."
-          image={spaces[0].image}
+          image={spaces[0]!.image}
           button={{ label: "Discover More", href: "#craft" }}
         />
         <div id="shop">
           <CaneProductShowcase eyebrow="Bestsellers" heading="Pieces our customers love" products={products} columns={3} filters action={{ label: "View All", href: "#" }} />
         </div>
         <CaneSignatureProduct
-          product={products[0]}
+          product={products[0]!}
           description="Our most loved design. A low, deep lounge chair with a hand-caned back and seat on a solid teak frame — made to be sunk into with a book and a cup of chai."
         />
         <div id="spaces">
@@ -75,7 +75,7 @@ function Index() {
         <div id="craft">
           <CaneCraftsmanship
             mainImage={craft}
-            secondaryImage={products[1].image}
+            secondaryImage={products[1]!.image}
             heading="Forty hours of hands in every chair."
             description="Our workshop in Kerala brings together third-generation weavers and woodworkers. Nothing is rushed, and nothing leaves until it's right."
             features={[
@@ -98,7 +98,7 @@ function Index() {
         <CaneInstagramGallery handle="@cane.home" images={spaces.map((s) => s.image)} />
         <div id="contact">
           <CaneContactCTA
-            image={spaces[4].image}
+            image={spaces[4]!.image}
             heading="Furnishing a whole home?"
             description="Our design team offers free consultations for homes, cafés and boutique stays."
             button={{ label: "Book a Consultation", href: "#" }}

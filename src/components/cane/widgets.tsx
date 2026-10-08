@@ -34,7 +34,7 @@ export function CaneHero(p: {
 }
 
 /* Shared section heading */
-function SectionHead({ eyebrow, heading, action }: { eyebrow?: string; heading: string; action?: Btn }) {
+function SectionHead({ eyebrow, heading, action }: { eyebrow?: string | undefined; heading: string; action?: Btn | undefined }) {
   return (
     <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
       <div>
@@ -244,7 +244,7 @@ export function CaneEditorialStory({ image, eyebrow, heading, description, butto
 /* 10. Cane Testimonial (carousel) */
 export function CaneTestimonial({ items }: { items: Testimonial[] }) {
   const [i, setI] = useState(0);
-  const t = items[i];
+  const t = items[i]!;
   return (
     <section className="mx-auto max-w-4xl px-6 py-28 text-center">
       <p className="eyebrow mb-8">Loved in Homes Across India</p>
